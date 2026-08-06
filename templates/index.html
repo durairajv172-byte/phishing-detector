@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wardline · Phishing Email Detector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">⟁</span>
+    <div class="brand-text">
+      <span class="brand-name">WARDLINE</span>
+      <span class="brand-sub">phishing email inspector</span>
+    </div>
+  </div>
+  <div class="brand-stat">
+    <span class="stat-label">model accuracy</span>
+    <span class="stat-value">{{ metrics.accuracy }}%</span>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="hero">
+    <p class="eyebrow">01 · SUBMIT A SAMPLE</p>
+    <h1>Paste the email. <span class="glow-text">Let the ward scan it.</span></h1>
+    <p class="hero-copy">A Scikit-learn classifier trained on phishing &amp; legitimate email text —
+      reads the wording, counts the urgency cues, checks the links, and hands back a verdict.</p>
+  </section>
+
+  <section class="console">
+    <div class="console-input">
+      <div class="console-head">
+        <span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span>
+        <span class="console-title">inbox.eml</span>
+      </div>
+      <textarea id="emailInput" placeholder="Dear Customer, your account has been suspended. Click here to verify: http://secure-paypal-verify.com/login ..."></textarea>
+      <div class="console-actions">
+        <button id="scanBtn" class="scan-btn">
+          <span class="btn-label">Scan Email</span>
+          <span class="btn-glyph">▸</span>
+        </button>
+        <button id="sampleBtn" class="ghost-btn">try a sample</button>
+      </div>
+      <p id="errorMsg" class="error-msg"></p>
+    </div>
+
+    <div class="console-result" id="resultPanel">
+      <div class="result-idle">
+        <div class="radar">
+          <div class="radar-ring r1"></div>
+          <div class="radar-ring r2"></div>
+          <div class="radar-ring r3"></div>
+          <div class="radar-core"></div>
+        </div>
+        <p>Awaiting input — verdict renders here.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="metrics">
+    <p class="eyebrow">02 · MODEL PERFORMANCE</p>
+    <h2>Trained &amp; validated on a held-out test split.</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-value">{{ metrics.accuracy }}%</span>
+        <span class="metric-label">Accuracy</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-value">{{ metrics.precision_phishing }}%</span>
+        <span class="metric-label">Precision (Phishing)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-value">{{ metrics.recall_phishing }}%</span>
+        <span class="metric-label">Recall (Phishing)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-value">{{ metrics.f1_phishing }}%</span>
+        <span class="metric-label">F1 Score</span>
+      </div>
+    </div>
+    <div class="matrix-wrap">
+      <img src="{{ url_for('static', filename='confusion_matrix.png') }}" alt="Confusion matrix">
+      <p class="matrix-caption">Confusion matrix on {{ metrics.test_size }} held-out emails
+        (trained on {{ metrics.train_size }}).</p>
+    </div>
+  </section>
+
+  <section class="features">
+    <p class="eyebrow">03 · WHAT THE WARD CHECKS</p>
+    <div class="feature-row">
+      <div class="feature-item">
+        <span class="feature-glyph">URL</span>
+        <p>Counts links, flags raw-IP URLs and suspicious TLDs (.ru, .xyz, .top, .click).</p>
+      </div>
+      <div class="feature-item">
+        <span class="feature-glyph">TXT</span>
+        <p>TF-IDF over wording &amp; phrasing — unigrams and bigrams, 3000 features.</p>
+      </div>
+      <div class="feature-item">
+        <span class="feature-glyph">!</span>
+        <p>Scores urgency language: "verify", "suspended", "act now", "locked", etc.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>Built with Scikit-learn + Flask · Logistic Regression on TF-IDF + engineered features</span>
+</footer>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
