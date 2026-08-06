@@ -1,0 +1,22 @@
+{
+  "accuracy": 100.0,
+  "confusion_matrix": [
+    [
+      36,
+      0
+    ],
+    [
+      0,
+      36
+    ]
+  ],
+  "labels": [
+    "Safe",
+    "Phishing"
+  ],
+  "precision_phishing": 100.0,
+  "recall_phishing": 100.0,
+  "f1_phishing": 100.0,
+  "train_size": 288,
+  "test_size": 72
+}
